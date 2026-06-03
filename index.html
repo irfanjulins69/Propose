@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Shaafa Khumairoh 🤍</title>
+    
+    <!-- IMPORT GOOGLE FONTS PREMIUM & ELEGANT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Gaya dasar dengan warna latar belakang aurora romantis yang lebih dalam & estetik */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif; /* Font dasar bersih dan modern */
+            background: linear-gradient(135deg, #160c1a 0%, #381830 35%, #6e324b 70%, #b87373 100%);
+            overflow: hidden;
+            color: #fff;
+            position: relative;
+        }
+
+        /* Canvas untuk animasi bunga berjatuhan */
+        #flower-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Lapisan kabut atmosfer sinematik */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(216, 115, 115, 0.2) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* GERBANG INTRO UNTUK HP: Memastikan audio aktif saat di-klik */
+        #audio-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #160c1a 0%, #381830 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s;
+        }
+
+        .gate-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            color: #f3e1e1;
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .gate-btn {
+            padding: 15px 40px;
+            font-size: 0.95rem;
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+            animation: pulseGlow 2s infinite ease-in-out;
+            transition: transform 0.3s;
+        }
+
+        .gate-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Kartu Proposal Premium */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px 40px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 480px;
+            width: 85%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 10;
+            box-sizing: border-box;
+            opacity: 0;
+        }
+
+        /* Class pemicu animasi kartu setelah surat dibuka */
+        .card.reveal-active {
+            animation: cardReveal 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Animasi detak jantung emosional */
+        .heart-icon {
+            font-size: 45px;
+            color: #ff4d6d;
+            animation: heartbeat 2s infinite ease-in-out;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 15px rgba(255, 77, 109, 0.6));
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.3rem;
+            margin-bottom: 25px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            color: #fff;
+        }
+
+        /* Teks muncul baris demi baris secara puitis */
+        .fade-line {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        .reveal-active .fade-line {
+            animation: textLineReveal 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .reveal-active .line-1 { animation-delay: 1.0s; }
+        .reveal-active .line-2 { animation-delay: 3.5s; }
+        .reveal-active .line-3 { animation-delay: 6.0s; }
+        .reveal-active .line-4 { animation-delay: 8.5s; }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.9rem; }
+            .message { font-size: 0.9rem !important; line-height: 1.9 !important; }
+            button { padding: 12px 30px !important; font-size: 0.85rem !important; }
+            .card { padding: 40px 25px; }
+            .btn-container { gap: 15px !important; }
+        }
+
+        .message {
+            font-size: 0.98rem;
+            font-weight: 300; /* Membuat teks Montserrat terlihat tipis mewah */
+            line-height: 2; /* Jarak antar-baris renggang agar nyaman dibaca */
+            letter-spacing: 0.5px;
+            margin-bottom: 35px;
+            color: #ecdbdb;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        /* HIGHLIGHT SANGAT EYE-CATCHING & ELEGANT */
+        .highlight {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem; /* Font serif sedikit diperbesar agar puitis */
+            font-weight: 400;
+            font-style: italic;
+            background: linear-gradient(to right, #ffccd5, #ff758f, #f9b4ab, #ffccd5);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.5));
+            padding: 2px 4px;
+            display: inline-block;
+            animation: shineText 4s linear infinite;
+        }
+
+        /* AREA TOMBOL */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            position: relative;
+            min-height: 60px;
+            margin-top: 25px;
+            opacity: 0;
+        }
+
+        .reveal-active .btn-container {
+            animation: fadeInButtons 1.5s ease forwards;
+            animation-delay: 11s;
+        }
+
+        button {
+            padding: 14px 38px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Efek YES Bersinar Mewah (Pulse Glow) */
+        #yes-btn {
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
+            color: white;
+            font-weight: 500;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 12;
+            animation: buttonGlow 2s infinite ease-in-out;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #yes-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* Tombol NO yang kabur rapi */
+        #no-btn {
+            background-color: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            font-weight: 500;
+            position: relative;
+            z-index: 11;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: transform, top, left;
+        }
+
+        /* Bingkai Foto Bulat */
+        .photo-container {
+            width: 150px;
+            height: 150px;
+            margin: 25px auto;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: popIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Efek Cincin Bersinar */
+        .ring-box {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 5px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ring-emoji {
+            font-size: 65px;
+            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+            z-index: 5;
+        }
+
+        .ring-glow {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(184, 115, 115, 0.4) 60%, transparent 100%);
+            border-radius: 50%;
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        /* KEYFRAMES ANIMASI */
+        @keyframes cardReveal {
+            0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes textLineReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInButtons {
+            to { opacity: 1; }
+        }
+
+        @keyframes shineText {
+            to { background-position: 200% center; }
+        }
+
+        @keyframes buttonGlow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
+            50% { box-shadow: 0 8px 25px rgba(255, 77, 109, 0.7), 0 0 15px rgba(255, 117, 143, 0.4); transform: scale(1.02); }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 77, 109, 0.4)); }
+            45% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6)); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(0.9); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .celebration {
+            display: none;
+            animation: cardReveal 1.2s ease-in-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Gerbang Audio Utama (Kunci Autoplay HP) -->
+    <div id="audio-gate">
+        <div class="heart-icon" style="animation-duration: 1.2s;">❤️</div>
+        <div class="gate-title">You received a letter...</div>
+        <button class="gate-btn" onclick="unlockLetter()">Open Letter 🤍</button>
+    </div>
+
+    <canvas id="flower-canvas"></canvas>
+    <div class="ambient-glow"></div>
+
+    <audio id="romantic-music" loop preload="auto">
+        <source src="Ordinary.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Kartu Utama -->
+    <div class="card" id="proposal-card">
+        <div class="heart-icon">❤️</div>
+        <h1>To My Favorite Person,</h1>
+        <div class="message">
+            <span class="fade-line line-1" style="display: block;">Miles have kept us apart, but they’ve only proven how strong what we share truly is.</span>
+            <span class="fade-line line-2" style="display: block; margin-top: 10px;">No matter the time zones, the screens, or the distance...</span>
+            <span class="fade-line line-3" style="display: block; margin-top: 14px; margin-bottom: 14px;"><span class="highlight">my heart has always been right where you are.</span></span>
+            <span class="fade-line line-4" style="display: block; margin-top: 10px;">I’m ready for the distance to end, and for our forever to begin. <br><strong style="font-weight: 500; color: #fff;">Will you be my forever partner?</strong></span>
+        </div>
+        
+        <div class="btn-container">
+            <button id="yes-btn" onclick="celebrate()">Yes!</button>
+            <button id="no-btn">No</button>
+        </div>
+    </div>
+
+    <!-- Kartu Perayaan -->
+    <div class="card celebration" id="celebration-card" style="opacity: 1;">
+        <div class="ring-box">
+            <div class="ring-glow"></div>
+            <div class="ring-emoji">💍</div>
+        </div>
+
+        <div class="photo-container">
+            <img src="https://www.image2url.com/r2/default/images/1780495767758-db8e0d63-ee12-4971-82bc-3e2db495fca6.jpeg" alt="Our Beautiful Memory">
+        </div>
+
+        <h1>She Said Yes!</h1>
+        <p class="message">
+            My heart is so incredibly full. <br>
+            I cannot wait to hold you close, close the gap forever, and spend the rest of my life making you happy. <br><br>
+            <strong style="font-weight: 500; color: #fff;">Please claim your ring when we meet later my love! mwah &lt;3</strong>
+        </p>
+    </div>
+
+    <script>
+        const music = document.getElementById('romantic-music');
+
+        function unlockLetter() {
+            music.volume = 0.4;
+            music.play().then(() => {
+                console.log("Audio berhasil diputar.");
+            }).catch(error => {
+                console.log("Gagal memutar audio.", error);
+            });
+
+            const gate = document.getElementById('audio-gate');
+            gate.style.opacity = '0';
+            setTimeout(() => {
+                gate.style.visibility = 'hidden';
+            }, 1500);
+
+            document.getElementById('proposal-card').classList.add('reveal-active');
+            initFlowers();
+        }
+
+        // ================= ENGINE TOMBOL "NO" SELALU KABUR =================
+        const noBtn = document.getElementById('no-btn');
+        
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('mousemove', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); 
+            moveNoButton();
+        });
+
+        function moveNoButton() {
+            noBtn.style.position = 'absolute';
+            const card = document.getElementById('proposal-card');
+            const padding = 40;
+            const maxX = card.clientWidth - noBtn.clientWidth - padding;
+            const maxY = card.clientHeight - noBtn.clientHeight - padding;
+            
+            const randomX = Math.floor(Math.random() * (maxX - padding) + padding / 2);
+            const randomY = Math.floor(Math.random() * (maxY - padding) + padding / 2);
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        function celebrate() {
+            music.volume = 0.6;
+            music.play();
+            document.getElementById('proposal-card').style.display = 'none';
+            document.getElementById('celebration-card').style.display = 'block';
+            triggerCelebrationBlossom();
+        }
+
+        // ================= ENGINE ANIMASI BUNGA BERJATUHAN =================
+        const canvas = document.getElementById('flower-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let petals = [];
+        let maxPetals = 50;
+
+        function adjustDensity() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (canvas.width < 768) {
+                maxPetals = 22; 
+            } else {
+                maxPetals = 60;
+            }
+        }
+
+        const flowerColors = [
+            'rgba(244, 169, 169, 0.7)', 
+            'rgba(212, 138, 138, 0.6)', 
+            'rgba(141, 73, 103, 0.45)',  
+            'rgba(255, 210, 218, 0.65)'  
+        ];
+
+        class Petal {
+            constructor(isIntro = false) {
+                this.x = Math.random() * canvas.width;
+                this.y = isIntro ? (Math.random() * canvas.height) : (Math.random() * -canvas.height - 20);
+                this.size = Math.random() * 6 + 7;
+                this.speedY = Math.random() * 0.9 + 0.6; 
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+                this.angle = Math.random() * 360;
+                this.spin = Math.random() * 0.6 - 0.3;
+                this.windFrequency = Math.random() * 0.015 + 0.005;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.y * this.windFrequency) * 0.3;
+                this.angle += this.spin;
+
+                if (this.y > canvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.angle * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size / 1.7, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initFlowers() {
+            adjustDensity();
+            petals = [];
+            for (let i = 0; i < maxPetals; i++) {
+                petals.push(new Petal(true)); 
+            }
+        }
+
+        function triggerCelebrationBlossom() {
+            const extraPetals = maxPetals * 1.5;
+            for (let i = 0; i < extraPetals; i++) {
+                let p = new Petal();
+                p.y = Math.random() * -canvas.height;
+                p.speedY = Math.random() * 2 + 1.2; 
+                petals.push(p);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            petals.forEach(petal => {
+                petal.update();
+                petal.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            adjustDensity();
+        });
+
+        adjustDensity();
+        animate();
+    </script>
+</body>
+</html>
